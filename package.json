@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "python3 -m http.server 8000",
     "test": "playwright test",
-    "check": "node --check game.js"
+    "check": "node --check game.js && node --check world.js && node --check audio.js",
+    "vendor": "esbuild node_modules/three/build/three.module.js --bundle --format=esm --minify --legal-comments=inline --outfile=vendor/three.module.js",
+    "format": "prettier --write index.html styles.css game.js world.js audio.js playwright.config.cjs tests/*.cjs README.md DESIGN.md package.json"
   },
   "repository": {
     "type": "git",
@@ -14,12 +16,17 @@
   },
   "keywords": [],
   "author": "",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/KLINEKRAFT/last-signal-game/issues"
   },
   "homepage": "https://github.com/KLINEKRAFT/last-signal-game#readme",
   "devDependencies": {
-    "@playwright/test": "^1.64.1"
+    "@playwright/test": "^1.64.1",
+    "esbuild": "0.28.2",
+    "prettier": "3.9.10"
+  },
+  "dependencies": {
+    "three": "0.187.0"
   }
 }
