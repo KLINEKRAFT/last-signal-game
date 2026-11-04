@@ -1,0 +1,7 @@
+{
+  "name": "last-signal-game",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {"start": "python3 -m http.server 8000", "test": "node tests/game.cjs", "check": "node --check game.js"},
+  "devDependencies": {"playwright": "1.62.1"}
+}
