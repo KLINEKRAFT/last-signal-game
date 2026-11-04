@@ -1,69 +1,339 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0b1118">
-<meta name="description" content="Survive the Alaskan wilderness. Salvage supplies, keep the fire alive, and send your last signal for rescue.">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<title>LAST SIGNAL — Survive Alaska</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Oswald:wght@500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
-
-<div id="scene"></div>
-
-<div class="hud">
-  <header class="brand"><span class="brand-mark">⌁</span><div>LAST SIGNAL<small>68° N / ALASKAN WILDERNESS</small></div></header>
-  <nav class="tools" aria-label="Game controls"><button id="pause" aria-label="Pause game">Ⅱ</button><button id="help" aria-label="Show field guide">?</button></nav>
-  <section class="mission"><div class="eyebrow">RESCUE PROTOCOL <span id="progress">01 / 03</span></div><h2 id="objective">Search the wreckage</h2><p id="objective-detail">Recover supplies from the downed aircraft.</p><div class="mission-line"><span id="mission-fill"></span></div><div id="bearing">WRECKAGE · 5 M</div></section>
-  <div class="topbar">
-    <span id="hud-day">DAY 1</span>
-    <span id="hud-time">4:17 PM</span>
-    <span class="wx" id="hud-wx">LIGHT SNOW</span>
-    <span class="temp" id="hud-temp">-6&deg;F</span>
-  </div>
-
-  <div class="bottom">
-    <div class="row">
-      <div class="meters">
-        <div class="meter"><span>WARMTH</span><div class="bar"><div class="fill f-warm" id="m-warm"></div></div><span class="val" id="v-warm">72</span></div>
-        <div class="meter"><span>FOOD</span><div class="bar"><div class="fill f-hung" id="m-hung"></div></div><span class="val" id="v-hung">81</span></div>
-        <div class="meter"><span>WATER</span><div class="bar"><div class="fill f-thir" id="m-thir"></div></div><span class="val" id="v-thir">65</span></div>
-        <div class="meter"><span>ENERGY</span><div class="bar"><div class="fill f-ener" id="m-ener"></div></div><span class="val" id="v-ener">59</span></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="theme-color" content="#263a40" />
+    <meta
+      name="description"
+      content="A quiet survival story in the Alaskan wilderness. Keep a little warmth alive. Find a way home."
+    />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <title>Last Signal — A way home</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <svg class="svg-defs" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <symbol id="icon-signal" viewBox="0 0 24 24">
+          <path d="M4 16v4m5-8v8m5-12v12m5-17v17" />
+        </symbol>
+        <symbol id="icon-pause" viewBox="0 0 24 24">
+          <path d="M9 5v14M15 5v14" />
+        </symbol>
+        <symbol id="icon-book" viewBox="0 0 24 24">
+          <path
+            d="M12 6c-3-2-6-2-9-1v14c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1Zm0 0v14"
+          />
+        </symbol>
+        <symbol id="icon-sound" viewBox="0 0 24 24">
+          <path d="m11 5-6 5H2v4h3l6 5V5Zm4 3c3 2 3 6 0 8m3-11c5 4 5 10 0 14" />
+        </symbol>
+        <symbol id="icon-fire" viewBox="0 0 24 24">
+          <path
+            d="M13 2c1 6-4 7-2 11 1-1 2-3 3-4 4 4 5 7 2 11-3 3-9 2-11-2-2-5 2-7 3-10 0 3 1 4 2 4-1-4 3-5 3-10Z"
+          />
+        </symbol>
+        <symbol id="icon-food" viewBox="0 0 24 24">
+          <path d="m7 3 10 2 2 14-12 2-3-8L7 3Zm-1 7 12-2M7 16l11-2" />
+        </symbol>
+        <symbol id="icon-water" viewBox="0 0 24 24">
+          <path
+            d="M9 2h6v4l3 4v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V10l3-4V2Zm-1 12h8M9 6h6"
+          />
+        </symbol>
+        <symbol id="icon-energy" viewBox="0 0 24 24">
+          <path d="m13 2-8 12h6l-1 8 9-13h-6l1-7Z" />
+        </symbol>
+        <symbol id="icon-wood" viewBox="0 0 24 24">
+          <path
+            d="m5 17 11-11c4-4 9 1 5 5L10 22c-4 3-9-2-5-5Zm0 0c4-3 9 2 5 5M3 6l6-4 5 4M3 6v7l3 3M3 6l7 5"
+          />
+        </symbol>
+        <symbol id="icon-radio" viewBox="0 0 24 24">
+          <rect x="4" y="8" width="16" height="13" rx="2" />
+          <path d="m7 8 9-6M7 12h10M7 16h3m4 0h3M7 18h3" />
+        </symbol>
+        <symbol id="icon-compass" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9" />
+          <path d="m16 8-2 6-6 2 2-6 6-2Z" />
+        </symbol>
+        <symbol id="icon-arrow" viewBox="0 0 24 24">
+          <path d="m7 17 10-10M7 7h10v10" />
+        </symbol>
+        <symbol id="icon-snow" viewBox="0 0 24 24">
+          <path
+            d="M12 2v20M3 7l18 10M3 17 21 7M9 4l3 3 3-3M9 20l3-3 3 3M4 10l4-1-1-4M17 19l-1-4 4-1M4 14l4 1-1 4M17 5l-1 4 4 1"
+          />
+        </symbol>
+        <symbol id="icon-plane" viewBox="0 0 24 24">
+          <path d="m3 12 7-2 4-7h3l-2 7 6 2v2l-7-1-3 7H9l1-7-7 1v-2Z" />
+        </symbol>
+        <symbol id="icon-pack" viewBox="0 0 24 24">
+          <rect x="5" y="6" width="14" height="16" rx="4" />
+          <path d="M9 6V3h6v3M5 14h14M9 17h6" />
+        </symbol>
+        <symbol id="icon-check" viewBox="0 0 24 24">
+          <path d="m5 12 4 4L19 6" />
+        </symbol>
+      </defs>
+    </svg>
+    <main
+      id="scene"
+      aria-label="The Alaskan wilderness, an interactive 3D survival game"
+    ></main>
+    <div id="atmosphere" aria-hidden="true"></div>
+    <div class="hud" id="hud">
+      <header class="top-header">
+        <div class="brand">
+          <svg class="icon" aria-hidden="true"><use href="#icon-signal" /></svg
+          ><span>last signal<small>A WAY HOME</small></span>
+        </div>
+        <nav class="tools" aria-label="Expedition controls">
+          <button
+            id="sound"
+            class="icon-button"
+            aria-label="Enable ambient sound"
+            aria-pressed="false"
+          >
+            <svg class="icon" aria-hidden="true"><use href="#icon-sound" /></svg
+            ><span class="sound-off"></span>
+          </button>
+          <button id="help" class="icon-button" aria-label="Open field journal">
+            <svg class="icon" aria-hidden="true"><use href="#icon-book" /></svg>
+          </button>
+          <button id="pause" class="icon-button" aria-label="Pause game">
+            <svg class="icon" aria-hidden="true">
+              <use href="#icon-pause" />
+            </svg>
+          </button>
+        </nav>
+      </header>
+      <div class="weather-strip">
+        <span id="hud-day">DAY 1</span><i></i><span id="hud-time">4:17 PM</span
+        ><span class="weather"
+          ><svg class="icon" aria-hidden="true"><use href="#icon-snow" /></svg
+          ><span id="hud-wx">LIGHT SNOW</span
+          ><span id="hud-temp">−6°F</span></span
+        >
       </div>
-      <button id="interact">GATHER WOOD</button>
+      <section class="mission" aria-label="Current objective">
+        <div class="mission-icon">
+          <svg class="icon" aria-hidden="true">
+            <use href="#icon-compass" />
+          </svg>
+        </div>
+        <div class="mission-copy">
+          <div class="eyebrow">
+            A WAY HOME <span id="progress">01 / 03</span>
+          </div>
+          <h1 id="objective">Search the wreckage</h1>
+          <p id="objective-detail">There might be something we can use.</p>
+        </div>
+        <div class="direction">
+          <span id="direction-arrow">↑</span><span id="bearing">5 M</span>
+        </div>
+        <div class="mission-line"><span id="mission-fill"></span></div>
+      </section>
+      <div class="place-label">
+        <span class="place-dot"></span
+        ><span id="place-name">THE CRASH SITE</span
+        ><span class="coordinates">68° 12′ N · 149° 36′ W</span>
+      </div>
+      <div class="bottom">
+        <div class="meters" aria-label="Survival status">
+          <div class="meter warm" id="status-warm">
+            <svg class="icon" aria-hidden="true"><use href="#icon-fire" /></svg>
+            <div class="meter-readout">
+              <span class="meter-name">WARMTH</span
+              ><span class="val" id="v-warm">72</span>
+              <div class="bar"><div class="fill" id="m-warm"></div></div>
+            </div>
+          </div>
+          <div class="meter hung" id="status-hung">
+            <svg class="icon" aria-hidden="true"><use href="#icon-food" /></svg>
+            <div class="meter-readout">
+              <span class="meter-name">FOOD</span
+              ><span class="val" id="v-hung">81</span>
+              <div class="bar"><div class="fill" id="m-hung"></div></div>
+            </div>
+          </div>
+          <div class="meter thir" id="status-thir">
+            <svg class="icon" aria-hidden="true">
+              <use href="#icon-water" />
+            </svg>
+            <div class="meter-readout">
+              <span class="meter-name">WATER</span
+              ><span class="val" id="v-thir">65</span>
+              <div class="bar"><div class="fill" id="m-thir"></div></div>
+            </div>
+          </div>
+          <div class="meter ener" id="status-ener">
+            <svg class="icon" aria-hidden="true">
+              <use href="#icon-energy" />
+            </svg>
+            <div class="meter-readout">
+              <span class="meter-name">ENERGY</span
+              ><span class="val" id="v-ener">59</span>
+              <div class="bar"><div class="fill" id="m-ener"></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="touch-controls">
+          <div
+            id="joystick"
+            role="group"
+            aria-label="Movement pad: hold and drag to walk"
+          >
+            <div class="joystick-cross"></div>
+            <div id="joystick-thumb">
+              <svg class="icon" aria-hidden="true">
+                <use href="#icon-compass" />
+              </svg>
+            </div>
+            <span class="joystick-label">HOLD TO WALK</span>
+          </div>
+          <div class="action-area">
+            <span id="interaction-hint">KEEP A LITTLE WARMTH ALIVE</span
+            ><button id="interact" disabled>
+              <span class="action-icon"
+                ><svg class="icon" aria-hidden="true">
+                  <use href="#icon-plane" /></svg></span
+              ><span id="action-label">Search wreckage</span
+              ><span class="action-key">E</span></button
+            ><button
+              id="sprint"
+              aria-label="Toggle running"
+              aria-pressed="false"
+            >
+              <svg class="icon" aria-hidden="true">
+                <use href="#icon-energy" /></svg
+              ><span>WALKING</span>
+            </button>
+          </div>
+        </div>
+        <div class="inventory-wrap">
+          <div class="inventory-caption">
+            <svg class="icon" aria-hidden="true"><use href="#icon-pack" /></svg
+            ><span>YOUR PACK</span
+            ><span class="save-status" id="save-status"
+              >SAVED ON THIS DEVICE</span
+            >
+          </div>
+          <div class="belt" aria-label="Inventory">
+            <div class="slot">
+              <svg class="icon" aria-hidden="true">
+                <use href="#icon-wood" /></svg
+              ><span>Wood<small>FOR FIRE & SIGNAL</small></span
+              ><b id="inv-wood">0</b>
+            </div>
+            <button class="slot" id="eat" aria-label="Eat a ration">
+              <svg class="icon" aria-hidden="true">
+                <use href="#icon-food" /></svg
+              ><span>Ration<small>EAT · 1</small></span
+              ><b id="inv-food">0</b>
+            </button>
+            <button class="slot" id="drink" aria-label="Drink water">
+              <svg class="icon" aria-hidden="true">
+                <use href="#icon-water" /></svg
+              ><span>Water<small>DRINK · 2</small></span
+              ><b id="inv-water">0</b>
+            </button>
+            <div class="slot">
+              <svg class="icon" aria-hidden="true">
+                <use href="#icon-radio" /></svg
+              ><span>Radio<small>SALVAGED PARTS</small></span
+              ><b id="inv-parts">0</b>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="belt">
-      <div class="slot"><span class="ct" id="inv-wood">0</span><span>WOOD</span></div>
-      <button class="slot" id="eat" aria-label="Eat a ration"><span class="ct" id="inv-food">0</span><span>RATION · 1</span></button>
-      <button class="slot" id="drink" aria-label="Drink water"><span class="ct" id="inv-water">0</span><span>WATER · 2</span></button>
-      <div class="slot"><span class="ct" id="inv-parts">0</span><span>RADIO</span></div>
+    <div id="landmark" aria-hidden="true">
+      <svg class="icon" aria-hidden="true"><use href="#icon-plane" /></svg
+      ><span id="landmark-text">WRECKAGE</span>
     </div>
-  </div>
-</div>
-
-<div id="toast" role="status" aria-live="polite"></div><div class="key-hint">WASD / ARROWS <span>MOVE</span> &nbsp; E <span>INTERACT</span> &nbsp; SHIFT <span>RUN</span></div><div id="vignette"></div>
-
-<div id="boot">
-  <div class="m1">AN ALASKAN SURVIVAL STORY</div>
-  <h1>LAST SIGNAL</h1>
-  <div class="sub">THE WILDERNESS IS LISTENING</div>
-  <div class="rule"></div>
-  <p class="intro">The plane is down. The temperature is falling.<br>One signal could bring you home.</p>
-  <div class="how"><b>01</b> Salvage the crash &nbsp; <b>02</b> Build a fire<br><b>03</b> Reach the ridge and transmit<br><span>WASD / arrows or hold & drag to move. E to interact.</span></div>
-  <button id="begin">ENTER THE WILDERNESS <span>↗</span></button>
-  <button id="continue" hidden>CONTINUE EXPEDITION</button>
-  <div class="kk">KLINEKRAFT</div>
-</div>
-
-<dialog id="panel"><div class="eyebrow">LAST SIGNAL / FIELD GUIDE</div><h2 id="panel-title">Expedition paused</h2><p id="panel-copy"></p><div class="dialog-actions"><button id="resume">RETURN TO THE WILD</button><button id="restart">NEW EXPEDITION</button></div></dialog>
-<script src="vendor/three.min.js"></script>
-<script src="game.js"></script>
-</body>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <div id="thought" aria-live="polite">
+      <span>ROWAN</span>
+      <p id="thought-copy"></p>
+    </div>
+    <div class="key-hint">
+      WASD <span>MOVE</span> &nbsp; E <span>INTERACT</span> &nbsp; SHIFT
+      <span>RUN</span>
+    </div>
+    <div id="vignette" aria-hidden="true"></div>
+    <section id="boot" aria-label="Last Signal title screen">
+      <div class="boot-top">
+        <span>KLINEKRAFT PRESENTS</span><span>AN ALASKAN SURVIVAL STORY</span>
+      </div>
+      <div class="boot-heading">
+        <div class="edition">
+          <span></span> NORTH OF EVERYTHING <span></span>
+        </div>
+        <h1>
+          Last<br /><em>Signal</em
+          ><span class="title-star" aria-hidden="true"
+            ><svg
+              viewBox="0 0 24 24"
+              width="28"
+              height="28"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.4"
+            >
+              <path d="M12 1v22M1 12h22M4 4l16 16M4 20 20 4" /></svg
+          ></span>
+        </h1>
+        <div class="sub">KEEP A LITTLE WARMTH ALIVE.</div>
+      </div>
+      <div class="boot-bottom">
+        <p class="intro">
+          A broken plane. A fading afternoon.<br />Somewhere beyond the trees, a
+          way home.
+        </p>
+        <button id="continue" class="primary" hidden>
+          Continue your story
+          <svg class="icon" aria-hidden="true">
+            <use href="#icon-arrow" />
+          </svg></button
+        ><button id="begin" class="primary" disabled aria-busy="true">
+          Find a way home
+          <svg class="icon" aria-hidden="true"><use href="#icon-arrow" /></svg>
+        </button>
+        <div class="boot-meta">
+          <span>HEADPHONES RECOMMENDED</span><span>68° 12′ N / 149° 36′ W</span>
+        </div>
+      </div>
+      <span class="boot-edge">THE BROOKS RANGE · ALASKA</span>
+    </section>
+    <dialog id="panel">
+      <div class="dialog-top">
+        <div class="eyebrow">ROWAN’S FIELD JOURNAL</div>
+        <svg class="icon" aria-hidden="true"><use href="#icon-book" /></svg>
+      </div>
+      <h2 id="panel-title">A moment to breathe.</h2>
+      <div class="journal-rule"></div>
+      <p id="panel-copy"></p>
+      <div id="journal-entries"></div>
+      <div class="dialog-actions">
+        <button id="resume" class="primary">
+          Back to the wilderness
+          <svg class="icon" aria-hidden="true">
+            <use href="#icon-arrow" />
+          </svg></button
+        ><button id="restart" class="text-button">Begin a new story</button>
+      </div>
+      <p class="journal-foot">One step. Then another.</p>
+    </dialog>
+    <script type="module" src="game.js"></script>
+  </body>
 </html>
